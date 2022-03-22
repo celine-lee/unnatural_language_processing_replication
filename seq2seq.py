@@ -4,7 +4,7 @@ import torch.nn as nn
 from torch import optim
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import torch.nn.functional as F
-# import wandb
+import wandb
 import random
 import json
 import argparse
@@ -101,13 +101,51 @@ class Seq2seq(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
 
+    def forward(self, input, input_len, data):
+        """ Forward pass on a single example.
+        Args:
+            input: (seq_len) in indices the synthetic utterance
+            input_len: length of the input sequence
+            data (Calendar): data object
+        Returns:
+            output: (seq_len) in indices the predicted program
+        """
+        self.eval()
+
+        input = input.unsqueeze(0) # (1, seq_len)
+        input_lens = torch.Tensor([input_len]) # (1)
+        # Send data to device
+        input = input.to(device)
+
+        # Encode inputs, get annotations
+        decoder_state, cell = self.encoder(input, input_lens) # (2, batch_size, hidden_size)
+        decoder_state = decoder_state.mean(dim=0, keepdim=True)
+        cell = cell.mean(dim=0, keepdim=True)
+        # Decode in time steps using annotations and decoder states
+        out_token = torch.tensor([data.SOS_TOK]).to(device) 
+        
+        prediction = []
+        while True:
+            out_token_prob_distr, decoder_state, cell = self.decoder(out_token, decoder_state, cell) # (batch_size, hidden_size)
+            out_token_prob_distr = out_token_prob_distr[:,-1,:]
+            predicted = torch.argmax(out_token_prob_distr, dim=-1)
+            out_token = predicted
+            if out_token[0].item() == data.EOS_TOK:
+                break
+            prediction.append(predicted.item())
+        
+
+        # make predictions tensors
+        prediction = torch.tensor(prediction)
+
+        return data.tensorized_to_program(prediction)
 
 
 
 def train_epoch(data, seq2seq, hidden_size, optimizer, criterion, force_teacher=True):
     """ Train seq2seq model.
     Args:
-        data: IWSLT_Data object
+        data: Calendar object
         seq2seq: Seq2seq model
         hidden_size: size of hidden state
         optimizer:  optimizer
@@ -128,7 +166,6 @@ def train_epoch(data, seq2seq, hidden_size, optimizer, criterion, force_teacher=
     total_num_items = 0
 
     for input, target, input_lens, _ in dataloader:
-        print('INPUT: ', input.shape, '; TARGETS: ', target.shape)
         batch_size = input.size(0)
         # seq_len = input.size(1)
         out_seq_len = target.size(1)
@@ -169,7 +206,7 @@ def train_epoch(data, seq2seq, hidden_size, optimizer, criterion, force_teacher=
         # make predictions tensors
         for j in range(batch_size):
             predictions[j] = torch.tensor(predictions[j])
-            print('\nSRC: ', data.tensorized_to_synth_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
+            # print('\nSRC: ', data.tensorized_to_synth_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
 
         # update loss and accuracy
         total_loss += loss.item()
@@ -184,7 +221,7 @@ def train_epoch(data, seq2seq, hidden_size, optimizer, criterion, force_teacher=
     return total_loss / total_num_items, total_correct / total_num_items
 
 
-def train_model(seq2seq, data, optimizer, hidden_size, num_epochs, learning_rate, teacher_forcing_ratio, patience):
+def train_model(seq2seq, data, optimizer, hidden_size, num_epochs, learning_rate, teacher_forcing_ratio):
     """ Train the model with the training set. 
     Args:
         seq2seq: the seq2seq model
@@ -194,7 +231,6 @@ def train_model(seq2seq, data, optimizer, hidden_size, num_epochs, learning_rate
         num_epochs: the number of epochs to train for
         learning_rate: the learning rate
         teacher_forcing_ratio: the teacher forcing ratio
-        patience: the patience for early stopping
     
     """
     seq2seq.train()
@@ -213,7 +249,7 @@ def train_model(seq2seq, data, optimizer, hidden_size, num_epochs, learning_rate
         force_teacher = (epoch < num_epochs/2) or (random.random() < teacher_forcing_ratio) 
         loss, accuracy = train_epoch(data, seq2seq, hidden_size, optimizer, loss_fn, force_teacher)
         
-        # wandb.log({'loss': loss, 'accuracy': accuracy, 'bleu': bleu})
+        wandb.log({'loss': loss, 'accuracy': accuracy})
         print('epoch ', epoch, ': loss: ', loss, '; accuracy: ', accuracy)
 
 def test_model(seq2seq, data, hidden_size):
@@ -241,7 +277,6 @@ def test_model(seq2seq, data, hidden_size):
 
 
     for input, target, input_lens, _ in dataloader:
-        print('INPUT: ', input.shape, '; TARGETS: ', target.shape)
         batch_size = input.size(0)
         # seq_len = input.size(1)
         out_seq_len = target.size(1)
@@ -307,7 +342,6 @@ def build_parser():
     parser.add_argument('--load_model', action='store_true', help='whether to load a model for evaluation.')
     parser.add_argument('--train_model', action='store_true', help='whether to train the model')
     parser.add_argument('--model_filename', type=str, default='seq2seq_model', help='filename of saved model. It will be saved in models/ with .pt and configs/ with .json')
-    parser.add_argument('--patience', type=int, default=5, help='number of epochs to wait before early stopping')
     return parser
 
 def load_model(model_file, config_file):
@@ -320,7 +354,7 @@ def load_model(model_file, config_file):
     """
     config = json.load(open(config_file))
     encoder = Encoder(config['src_vocab_size'], config['embedding_size'], config['hidden_size'])
-    decoder = Decoder(config['tgt_vocab_size'], config['embedding_size'], config['hidden_size'], config['a_hidden_units'], config['mo_hidden_units'])
+    decoder = Decoder(config['tgt_vocab_size'], config['embedding_size'], config['hidden_size'])
     seq2seq = Seq2seq(encoder, decoder)
     seq2seq.load_state_dict(torch.load(model_file))
     return seq2seq
@@ -334,12 +368,12 @@ if __name__ == '__main__':
     config_path = 'configs/' + args.model_filename + '.json'
 
     if args.train_model:
-        # wandb.init(project="unnatural-seq2seq-translation", 
-        #             entity="celinelee", 
-        #             config = args
-        # )
-        # config = wandb.config
-        config = args
+        wandb.init(project="unnatural-seq2seq-translation", 
+                    entity="celinelee", 
+                    config = args
+        )
+        config = wandb.config
+        # config = args
         data = Calendar('overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size)
 
 
@@ -350,7 +384,7 @@ if __name__ == '__main__':
             decoder = Decoder(len(data.program_vocab), config.embedding_size, config.hidden_size)
             seq2seq = Seq2seq(encoder, decoder)
         seq2seq.to(device)
-        train_model(seq2seq, data, config.optimizer, config.hidden_size, config.epochs, config.learning_rate, config.teacher_forcing_ratio, config.patience)
+        train_model(seq2seq, data, config.optimizer, config.hidden_size, config.epochs, config.learning_rate, config.teacher_forcing_ratio)
         print("Finished training...")
     else:
         config = args
@@ -365,17 +399,17 @@ if __name__ == '__main__':
     loss, accuracy = test_model(seq2seq, data, config.hidden_size)
     print('Test results:\n\tLoss: ', loss, '\n\tAccuracy: ', accuracy)
 
-    # if config.save_model:
-    #     torch.save(seq2seq.state_dict(), model_path)
-    #     with open(config_path, 'w') as f:
-    #         model_config = {
-    #             'src_vocab_size': data.src_vocab_size,
-    #             'tgt_vocab_size': data.tgt_vocab_size,
-    #             'embedding_size': config.embedding_size,
-    #             'hidden_size': config.hidden_size,
-    #         }
-    #         json.dump(model_config, f, indent=4)
-    #     print('Saved model in ', model_path, ' with config saved to ', config_path)
-    # else:
-    #     print('Model not saved.')
+    if config.save_model:
+        torch.save(seq2seq.state_dict(), model_path)
+        with open(config_path, 'w') as f:
+            model_config = {
+                'src_vocab_size': len(data.synth_utterance_vocab),
+                'tgt_vocab_size': len(data.program_vocab),
+                'embedding_size': config.embedding_size,
+                'hidden_size': config.hidden_size,
+            }
+            json.dump(model_config, f, indent=4)
+        print('Saved model in ', model_path, ' with config saved to ', config_path)
+    else:
+        print('Model not saved.')
 

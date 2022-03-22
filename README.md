@@ -1,16 +1,30 @@
-## Setup
+# Midterm Replication Project: Unnatural Language Processing: Bridging the Gap Between Synthetic and Natural Language Data
+
+## Introduction
+
+## Method
+
+## Results
+
+
+
+## How to replicate
+
+
+### Setup
 
 ```
 conda create --name synthetic python=3.8
 conda activate synthetic
 
 conda install pytorch
+pip install -U sentence-transformers
 ```
 
-
-## Run
+### Run
 ```
-python seq2seq.py --train_model
+python seq2seq.py --optimizer adam --epochs 20 --batch_size 8 --save_model --train_model --model_filename "seq2seq_20eps"
+python baseline.py --batch_size 8 --model_filename seq2seq_20eps --output_filename 'output/seq2seq_20eps_projection.txt'
 ```
 
 
