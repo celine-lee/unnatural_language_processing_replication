@@ -252,12 +252,15 @@ def train_model(seq2seq, data, optimizer, hidden_size, num_epochs, learning_rate
         wandb.log({'loss': loss, 'accuracy': accuracy})
         print('epoch ', epoch, ': loss: ', loss, '; accuracy: ', accuracy)
 
-def test_model(seq2seq, data, hidden_size):
+        loss, accuracy = test_model(seq2seq, data)
+        wandb.log({'Test Loss': loss, 'Test Accuracy': accuracy})
+        print('Test results:\n\tLoss: ', loss, '\n\tAccuracy: ', accuracy)
+
+def test_model(seq2seq, data):
     """ Test the model on the test set. 
     Args:
         seq2seq: the seq2seq model
         data: the data object
-        hidden_size: the hidden size of the model
     
     Returns:
         loss: the loss on the test set
@@ -269,12 +272,9 @@ def test_model(seq2seq, data, hidden_size):
 
     criterion = nn.CrossEntropyLoss(ignore_index=data.PAD_TOK)
 
-    
-
     total_loss = 0
     total_correct = 0
     total_num_items = 0
-
 
     for input, target, input_lens, _ in dataloader:
         batch_size = input.size(0)
@@ -315,13 +315,12 @@ def test_model(seq2seq, data, hidden_size):
         # make predictions tensors
         for j in range(batch_size):
             predictions[j] = torch.tensor(predictions[j])
-            print('\nSRC: ', data.tensorized_to_synth_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
+            # print('\nSRC: ', data.tensorized_to_synth_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
 
         # update loss and accuracy
         total_loss += loss.item()
         total_correct += num_correct.item()
         total_num_items += num_in_this_batch
-
 
     return total_loss / total_num_items, total_correct / total_num_items
 
@@ -396,7 +395,7 @@ if __name__ == '__main__':
             print('Must either train or load a model. Exiting...')
             exit()
 
-    loss, accuracy = test_model(seq2seq, data, config.hidden_size)
+    loss, accuracy = test_model(seq2seq, data)
     print('Test results:\n\tLoss: ', loss, '\n\tAccuracy: ', accuracy)
 
     if config.save_model:

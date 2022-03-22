@@ -4,15 +4,18 @@
 
 ## Method
 
-
+Graphs from the training procedure are shown below:
 ![Training Accuracy](images/accuracy_plot.png?raw=true "seq2seq training accuracy")
 ![Training Loss](images/loss_plot.png?raw=true "seq2seq training loss")
+![Test Accuracy](images/test_acc_plot.png?raw=true "seq2seq test accuracy")
+![Test Loss](images/test_loss_plot.png?raw=true "seq2seq test loss")
 
 ## Results
-| Model         | Projector | Accuracy (EM)| Paper Accuracy|
-| ------------- |:---------:|:------------:|:-------------:|
-| adagrad-8eps  | Flat      | 0.0          | 0.32          |
-| adam-20eps    | Flat      | 0.25         | 0.32          |
+| Model         | Projector | Program Accuracy | Program Accuracy (w test)| Synth Utterance Accuracy | Synth Utterance Accuracy (w test) | Paper Accuracy|
+| ------------- |:---------:|:----------------:|:-----------------------:|:------------------------:|:---------------------------------:|:-------------:|
+| adagrad-8eps  | Flat      | 0.0              | 0.0                     | 0.4166                   |  0.4226                           |   0.32        |
+| adam-20eps    | Flat      | 0.4167           | 0.4226                  | 0.4167                   |  0.4226                           | 0.32          |
+| adam-8eps     | Flat      | 0.4167           | 0.4226                  | 0.4167                   |  0.4226                           | 0.32          |
 
 ## How to replicate
 
@@ -49,7 +52,8 @@ python baseline.py \
 
 An interactive version of the interface can be run with the following command:
 ```
-TODO
+python baseline_demo.py \
+        --output_file 'output/interactive_projection.txt'
 ```
 
 

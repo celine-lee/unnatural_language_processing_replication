@@ -1,6 +1,0 @@
-{
-    "src_vocab_size": 55,
-    "tgt_vocab_size": 61,
-    "embedding_size": 256,
-    "hidden_size": 1024
-}

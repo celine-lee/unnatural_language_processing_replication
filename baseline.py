@@ -12,6 +12,7 @@ def build_parser():
     parser.add_argument('--batch_size', type=int, default=8, help='batch size to use')
     parser.add_argument('--model_filename', type=str, default='seq2seq', help='filename of saved model. It will be loaded in from models/ with .pt and configs/ with .json')
     parser.add_argument('--output_file', type=str, default='output/seq2seq_projection.txt', help='filename of file to write results to')
+    parser.add_argument('--use_test_synths_too', action='store_true', help='use test data to get synthetic utterances too')
     return parser
 
 if __name__ == '__main__':
@@ -21,13 +22,14 @@ if __name__ == '__main__':
 
     modelname = 'models/' + args.model_filename + '.pt'
     configname = 'configs/' + args.model_filename + '.json'
-    print(modelname, configname)
+    print('Loading model from ', modelname, configname)
 
-    projector = Projector(modelname, configname, 'overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size)
+    projector = Projector(modelname, configname, 'overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size, get_synth_from_test_too=args.use_test_synths_too)
     test_ds = projector.data.test_dataset
 
     outputs = []
     num_em = 0
+    num_syn_match = 0
     f = open(args.output_file, 'w')
     for example in test_ds:
         paraphrase = example['paraphrase']
@@ -43,6 +45,9 @@ if __name__ == '__main__':
         f.write('-------------\n')
         if program.split() == predicted_prog.split():
             num_em += 1
+        if closest_synth.split() == synthetic_utt.split():
+            num_syn_match += 1
 
-    f.write("Accuracy: {}".format(1.0 * num_em/len(test_ds)))
+    f.write("\nProgram Accuracy: {}".format(1.0 * num_em/len(test_ds)))
+    f.write("\nSynthetic Accuracy: {}".format(1.0 * num_syn_match/len(test_ds)))
     f.close()

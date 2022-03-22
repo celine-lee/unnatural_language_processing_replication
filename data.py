@@ -2,8 +2,6 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
 
-# example:original is synthetic; example:utterance is mturk paraphrase
-# example:targetFormula is program. I want to translate it into a simpler text of the same formula
 
 class CalendarDataset(Dataset):
     def __init__(self, data):

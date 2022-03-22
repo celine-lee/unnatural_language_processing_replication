@@ -7,6 +7,7 @@
 import torch
 from seq2seq import Encoder, Decoder, Seq2seq
 import json
+import numpy as np
 from data import Calendar
 
 from sentence_transformers import SentenceTransformer
@@ -14,12 +15,16 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Projector(): 
 
-    def __init__(self, model_file, config_file, train_datafile, test_datafile, embedder_name='all-MiniLM-L12-v2', batch_size=8):
+    def __init__(self, model_file, config_file, train_datafile, test_datafile, embedder_name='all-MiniLM-L12-v2', batch_size=8, get_synth_from_test_too=False):
         self.model = self.load_model(model_file, config_file)
         self.data = Calendar(train_datafile, test_datafile, batch_size=batch_size)
         self.embedder = SentenceTransformer(embedder_name)
 
         self.synth_utterances, self.synth_encodings = self.collect_all_synth_utterances(self.data.train_dataloader, self.data)
+        if get_synth_from_test_too:
+            synth_utterances_test, synth_encodings_test = self.collect_all_synth_utterances(self.data.test_dataloader, self.data)
+            self.synth_utterances = np.concatenate((self.synth_utterances, synth_utterances_test))
+            self.synth_encodings = np.concatenate((self.synth_encodings, synth_encodings_test))
 
 
     def load_model(self, model_file, config_file):
@@ -50,6 +55,7 @@ class Projector():
         for input, _, _, _ in dataloader:
             for j in range(input.size(0)):
                 synth_utterance = data.tensorized_to_synth_utterance(input[j])
+                synth_utterance = synth_utterance.replace('<EOS>', '').replace('<SOS>', '').replace('<PAD>', '')
                 synth_utterances.append(synth_utterance)
         synth_encodings = self.embedder.encode(synth_utterances)
         return synth_utterances, synth_encodings
