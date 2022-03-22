@@ -30,10 +30,8 @@ Once the data files for grammar and examples were downloaded, I wrote a dataload
 With the dataloader written, I follow suit of the paper and train a LSTM encoder-decoder model with an embedding size of 256 and a hidden size of 1024. This model is the seq2seq semantic parser from utterance to program in the Calendar domain. 
 
 Graphs from the training procedure on training the models only on synthetic data are shown below:
-![Training Accuracy](images/accuracy_plot.png?raw=true "seq2seq training accuracy")
-![Training Loss](images/loss_plot.png?raw=true "seq2seq training loss")
-![Test Accuracy](images/test_acc_plot.png?raw=true "seq2seq test accuracy")
-![Test Loss](images/test_loss_plot.png?raw=true "seq2seq test loss")
+![Training Performance](images/train_performance.png?raw=true "seq2seq training performance")
+![Test Performance](images/test_performance.png?raw=true "seq2seq test performance")
 
 ### (3) Write projection model
 In the paper, for all datasets in the semantic parsing Overnight dataset, the authors use the "flat" projection model <img src="https://render.githubusercontent.com/render/math?math=\pi">, which is to select the "closest" synthetic utterance to an input natural language utterance by using sentence embeddings (embed) and searching over all synthetic utterances <img src="https://render.githubusercontent.com/render/math?math=\tilde{x}"> in a set of utterances <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}"> to find the one with the closest cosine similarity <img src="https://render.githubusercontent.com/render/math?math=\delta">:
@@ -42,7 +40,7 @@ In the paper, for all datasets in the semantic parsing Overnight dataset, the au
 Therefore, we do the same, using SentenceTransformers's 'all-MiniLM-L12-v2' model and sklearn's cosine_similarity metric. The paper is unclear on how they obtain the set of synthetic utterances <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">, so I tried a couple techniques, all documented below:
 - save all synthetic utterances from training into <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">
 - save all synthetic utterances from training and test into <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">
-- save all synthetic utterances from training and programmatically augment each example with argument and function flips, according to the grammar files -- TODO
+- save all synthetic utterances from training and programmatically augment each example with argument and function flips, according to the grammar files
 
 ## Results
 | Model         | Train data | Program Accuracy | (w test) | (w augment) | (w test & augment) | Synth Utterance Accuracy | (w test)  | (w augment) | (w test & augment)| Paper Accuracy|
@@ -50,8 +48,8 @@ Therefore, we do the same, using SentenceTransformers's 'all-MiniLM-L12-v2' mode
 | adagrad-8eps  | synthetic  | 0.0              | 0.0      | 0.0         | 0.0                | 0.4166                   |  0.4226   | 0.3988      | 0.3988            |   0.32        |
 | adam-20eps    | synthetic  | 0.4167           | 0.4226   | --          | --                 | 0.4167                   |  0.4226   |  --        | --                 | 0.32          |
 | adam-8eps     | synthetic  | 0.4167           | 0.4226   | 0.3988      | 0.3988             | 0.4167                   |  0.4226   | 0.3988     | 0.3988             | 0.32          |
-| adam-15-real  | real       | 0.0119           | 0.0119   | 0.0119      | 0.0119             | 0.4167                   |  0.4226   | 0.3988     | 0.3988            | 0.27          |
-| adam-15-both  | both       | 0.           | 0.                   | 0.                   |  0.                           | 0.13          |
+| adam-15-real  | real       | 0.0119           | 0.0119   | 0.0119      | 0.0119             | 0.4167                   |  0.4226   | 0.3988     | 0.3988             | 0.27          |
+| adam-15-both  | both       | 0.0              | 0.0      | 0.0         | 0.0                |  0.4167                  |  0.4226   | 0.3988     | 0.3988              | 0.13          |
 
 
 ## How to replicate

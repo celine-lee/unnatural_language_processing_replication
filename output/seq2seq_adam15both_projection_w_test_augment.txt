@@ -1,0 +1,1011 @@
+
+-------------
+NL praphrase: which meetings end later than 10 in the morning or 3 in the afternoon; true synthetic utterance: meeting whose end time is larger than 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >)  (ensureNumericEntity (concat (time 10 0)  (time 15 0) ) ) ) ) 
+-->Closest synth: meeting whose end time is 10am or 3pm     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: important meeting with three hour duration; true synthetic utterance: meeting that is important and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting that is important and whose length is three hours   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting that has duration of lesser than three hour; true synthetic utterance: meeting whose length is smaller than three hours true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string <)  (ensureNumericEntity (number 3 en.hour) ) ) ) 
+-->Closest synth: meeting whose length is at least three hours     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that start earlier than or at the same time as the weekly standup meeting; true synthetic utterance: meeting whose start time is at most end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string <=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose start time is start time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me the meetings that are scheduled for longest length of time; true synthetic utterance: meeting that has the largest length true program:     (listValue (superlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (ensureNumericProperty (string length) ) ) ) 
+-->Closest synth: meeting that has the largest end time      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (string location) (string =) (getProperty en.meeting.weekly_standup (string location) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting is alice not attending; true synthetic utterance: meeting whose attendee is not alice true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string !=)  en.person.alice) ) 
+-->Closest synth: meeting whose attendee is alice        
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (date 2015 1 2) ) ) )
+-------------
+
+-------------
+NL praphrase: which january 2nd meeting is three hours long; true synthetic utterance: meeting whose date is jan 2 and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose date is jan 2 and whose length is three hours 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (concat (number 3 en.hour) (number 1 en.hour) ) ) ) )
+-------------
+
+-------------
+NL praphrase: who has attended the most meetings; true synthetic utterance: person that is attendee of the most number of meeting true program:     (listValue (countSuperlative (getProperty (singleton en.person)  (string !type) )  (string max)  (reverse (string attendee) )  (getProperty (singleton en.meeting)  (string !type) ) ) ) 
+-->Closest synth: person that is attendee of the most number of meeting     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting is no later than january 2nd or 3rd; true synthetic utterance: meeting whose date is at least jan 2 or jan 3 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >=)  (ensureNumericEntity (concat (date 2015 1 2)  (date 2015 1 3) ) ) ) ) 
+-->Closest synth: meeting whose date is at least jan 3    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all three hour meetings that begin at 10am; true synthetic utterance: meeting whose length is three hours and whose start time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (number 3 en.hour) )  (string start_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose start time is 10am and whose length is three hours 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings in greenberg cafe that start at 10am; true synthetic utterance: meeting whose start time is 10am and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) )  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose start time is 10am and whose location is greenberg cafe 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings on jan 2; true synthetic utterance: meeting whose date is jan 2 and whose date is jan 2 true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string date)  (string =)  (date 2015 1 2) ) ) 
+-->Closest synth: meeting whose date is jan 2       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings scheduled to be longer than the weekly standup meeting; true synthetic utterance: meeting whose length is larger than length of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string >)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) ) 
+-->Closest synth: meeting whose length is at most length of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings after january 2 or after january 3; true synthetic utterance: meeting whose date is larger than jan 2 or jan 3 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >)  (ensureNumericEntity (concat (date 2015 1 2)  (date 2015 1 3) ) ) ) ) 
+-->Closest synth: meeting whose date is jan 2 or jan 3    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting which is on jan 3 or before; true synthetic utterance: meeting whose date is at most jan 2 or jan 3 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string <=)  (ensureNumericEntity (concat (date 2015 1 2)  (date 2015 1 3) ) ) ) ) 
+-->Closest synth: meeting whose date is at least jan 3    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings shorter than three hours; true synthetic utterance: meeting whose length is at most three hours or one hour true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string <=)  (ensureNumericEntity (concat (number 3 en.hour)  (number 1 en.hour) ) ) ) ) 
+-->Closest synth: meeting whose length is not three hours      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting ends at 10am or earlier; true synthetic utterance: meeting whose end time is at most 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <=)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings marked important beginning at 10 am; true synthetic utterance: meeting that is important and whose start time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) )  (string start_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose start time is 10am and that is important   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: what is the longest meeting; true synthetic utterance: meeting that has the largest length true program:     (listValue (superlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (ensureNumericProperty (string length) ) ) ) 
+-->Closest synth: meeting that has the largest length       
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string is_important) ) (string location) (string =) en.location.greenberg_cafe) )
+-------------
+
+-------------
+NL praphrase: meetings that end at or before 10am or at or before 3pm; true synthetic utterance: meeting whose end time is at most 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <=)  (ensureNumericEntity (concat (time 10 0)  (time 15 0) ) ) ) ) 
+-->Closest synth: meeting whose end time is at most 10am or 3pm   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that start at the same time or after the weekly standup meeting ends; true synthetic utterance: meeting whose start time is at least end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose start time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what is the location of the weekly standup; true synthetic utterance: location that is location of weekly standup true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  en.meeting.weekly_standup) ) 
+-->Closest synth: location of weekly standup         
+-->Predicted program:(listValue (superlative (getProperty (singleton en.meeting) (string !type) ) (string min) (ensureNumericProperty (string start_time) ) ) )
+-------------
+
+-------------
+NL praphrase: people that attend the weekly standup meeting or the annual review meeting; true synthetic utterance: person that is attendee of weekly standup or annual review true program:     (listValue (filter (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string =)  (concat en.meeting.weekly_standup en.meeting.annual_review) ) ) 
+-->Closest synth: person that is attendee of weekly standup or annual review   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string >=) (ensureNumericEntity (number 3 en.hour) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has the longest length; true synthetic utterance: meeting that has the largest length true program:     (listValue (superlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (ensureNumericProperty (string length) ) ) ) 
+-->Closest synth: meeting that has the largest length       
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string is_important) ) (string location) (string =) en.location.greenberg_cafe) )
+-------------
+
+-------------
+NL praphrase: what meetings are located at greenberg cafe; true synthetic utterance: meeting whose location is greenberg cafe and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose location is greenberg cafe or greenberg cafe    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting that starts when the weekly standup meeting ends; true synthetic utterance: meeting whose start time is end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (getProperty en.meeting.weekly_standup (string end_time) ) ) ) 
+-->Closest synth: meeting whose start time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings in greenberg cafe that end at 10am; true synthetic utterance: meeting whose location is greenberg cafe and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose end time is 10am and whose location is greenberg cafe 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings happening on january 2nd; true synthetic utterance: meeting whose date is jan 2 and whose date is jan 2 true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string date)  (string =)  (date 2015 1 2) ) ) 
+-->Closest synth: meeting that is important and whose date is jan 2   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting doesnt end at 10am; true synthetic utterance: meeting whose end time is not 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string !=)  (time 10 0) ) ) 
+-->Closest synth: meeting whose end time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meeting that will end by 10am; true synthetic utterance: meeting whose end time is at most 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <=)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that start before 10am; true synthetic utterance: meeting whose start time is smaller than 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string <)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose start time is at most 10am     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting starts before end time of weekly standup; true synthetic utterance: meeting whose start time is smaller than end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string <)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose start time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: three hour meeting on january 2nd; true synthetic utterance: meeting whose length is three hours and whose date is jan 2 true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (number 3 en.hour) )  (string date)  (string =)  (date 2015 1 2) ) ) 
+-->Closest synth: meeting whose date is jan 2 and whose length is three hours 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (concat (number 3 en.hour) (number 1 en.hour) ) ) ) )
+-------------
+
+-------------
+NL praphrase: which people are attending meetings on january 2; true synthetic utterance: person that is attendee of meeting whose date is jan 2 true program:     (listValue (filter (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) ) ) ) 
+-->Closest synth: meeting whose date is jan 2       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that start at or after 10am; true synthetic utterance: meeting whose start time is at least 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >=)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose start time is at most 10am or 10am   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: location of more than two meetings; true synthetic utterance: location that is location of more than two meeting true program:     (listValue (countComparative (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string >)  (number 2)  (getProperty (singleton en.meeting)  (string !type) ) ) ) 
+-->Closest synth: location that is location of more than two meeting    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings in greenberg cafe on jan 2; true synthetic utterance: meeting whose date is jan 2 and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose date is jan 2 and whose location is greenberg cafe 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me any meetings labeled as important which are also three hours long; true synthetic utterance: meeting that is important and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose length is three hours and that is important   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string <) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all locations which have meetings ending at 10 am; true synthetic utterance: location that is location of meeting whose end time is 10am true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (time 10 0) ) ) ) 
+-->Closest synth: location that is location of meeting whose end time is 10am  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me the meeting that has the latest end time; true synthetic utterance: meeting that has the largest end time true program:     (listValue (superlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (ensureNumericProperty (string end_time) ) ) ) 
+-->Closest synth: meeting that has the largest end time      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (string location) (string =) (getProperty en.meeting.weekly_standup (string location) ) ) )
+-------------
+
+-------------
+NL praphrase: who is attending the 10sm meeting; true synthetic utterance: person that is attendee of meeting whose start time is 10am true program:     (listValue (filter (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) ) ) ) 
+-->Closest synth: meeting whose start time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings ending after 10am; true synthetic utterance: meeting whose end time is larger than 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings attended by alice beginning at 10 am; true synthetic utterance: meeting whose attendee is alice and whose start time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice)  (string start_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose attendee is alice and whose start time is 10am  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has and end time the same as weekly startup; true synthetic utterance: meeting whose end time is end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (getProperty en.meeting.weekly_standup (string end_time) ) ) ) 
+-->Closest synth: meeting whose end time is start time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings that take three hours in greenberg cafe; true synthetic utterance: meeting whose length is three hours and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (number 3 en.hour) )  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose length is three hours and whose location is greenberg cafe 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: which meeting has the fewest attendees; true synthetic utterance: meeting that has the least number of attendee true program:     (listValue (countSuperlative (getProperty (singleton en.meeting)  (string !type) )  (string min)  (string attendee) ) ) 
+-->Closest synth: meeting that has the least number of attendee     
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string date) (string =) (date 2015 1 2) ) (string start_time) (string =) (time 10 0) ) )
+-------------
+
+-------------
+NL praphrase: meeting ends before 10am or 3pm; true synthetic utterance: meeting whose end time is smaller than 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <)  (ensureNumericEntity (concat (time 10 0)  (time 15 0) ) ) ) ) 
+-->Closest synth: meeting whose end time is 10am or 3pm     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting which starts at 1000 am or 300 pm; true synthetic utterance: meeting whose start time is 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (concat (time 10 0)  (time 15 0) ) ) ) 
+-->Closest synth: meeting whose start time is at most 10am or 3pm   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings attended by alice in greenberg cafe; true synthetic utterance: meeting whose location is greenberg cafe and whose attendee is alice true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string attendee)  (string =)  en.person.alice) ) 
+-->Closest synth: meeting whose location is greenberg cafe and whose attendee is alice  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings shorter than 3 hours; true synthetic utterance: meeting whose length is at most three hours true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string <=)  (ensureNumericEntity (number 3 en.hour) ) ) ) 
+-->Closest synth: meeting whose length is not three hours      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what location is the three hour meeting; true synthetic utterance: location that is location of meeting whose length is three hours true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (number 3 en.hour) ) ) ) 
+-->Closest synth: location that is location of meeting whose length is three hours  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string >) (ensureNumericEntity (concat (number 3 en.hour) (number 1 en.hour) ) ) ) )
+-------------
+
+-------------
+NL praphrase: which january 2nd meetings is alice attenting; true synthetic utterance: meeting whose date is jan 2 and whose attendee is alice true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string attendee)  (string =)  en.person.alice) ) 
+-->Closest synth: meeting whose attendee is alice and whose date is jan 2 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings that begin at 10am; true synthetic utterance: meeting whose start time is 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose start time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: find the meeting with alice at greenberg cafe; true synthetic utterance: meeting whose attendee is alice and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice)  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose location is greenberg cafe and whose attendee is alice  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has a date of jan 2 or jan 3; true synthetic utterance: meeting whose date is at least jan 2 or jan 3 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >=)  (ensureNumericEntity (concat (date 2015 1 2)  (date 2015 1 3) ) ) ) ) 
+-->Closest synth: meeting whose date is jan 2 or jan 3    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting ends at 10 am or 3 pm; true synthetic utterance: meeting whose end time is 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (concat (time 10 0)  (time 15 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am or 3pm     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings marked important which are also attended by alice; true synthetic utterance: meeting that is important and whose attendee is alice true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) )  (string attendee)  (string =)  en.person.alice) ) 
+-->Closest synth: meeting that is important and whose attendee is alice    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me important meetings at greenberg cafe; true synthetic utterance: meeting whose location is greenberg cafe and that is important true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string is_important) ) ) 
+-->Closest synth: meeting that is important and whose location is greenberg cafe   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what is the end time of weekly standup; true synthetic utterance: end time of weekly standup true program:     (listValue (getProperty en.meeting.weekly_standup (string end_time) ) ) 
+-->Closest synth: end time of weekly standup        
+-->Predicted program:(listValue (superlative (getProperty (singleton en.meeting) (string !type) ) (string max) (ensureNumericProperty (string end_time) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting with no more than 2 locations; true synthetic utterance: meeting that has at most two location true program:     (listValue (countComparative (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string <=)  (number 2) ) ) 
+-->Closest synth: meeting that has at most two location      
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) en.person.alice) (string location) (string =) en.location.greenberg_cafe) )
+-------------
+
+-------------
+NL praphrase: meeting which starts at or before 10 am; true synthetic utterance: meeting whose start time is at most 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string <=)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose start time is at most 10am     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings at greenberg cafe ending at 10 am; true synthetic utterance: meeting whose location is greenberg cafe and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose end time is 10am and whose location is greenberg cafe 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting is at greenberg cafe; true synthetic utterance: location that is location of meeting whose location is greenberg cafe true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe) ) ) 
+-->Closest synth: meeting whose location is greenberg cafe         
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: location is same as the location of meeting on jan 2; true synthetic utterance: location that is location of meeting whose date is jan 2 true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) ) ) ) 
+-->Closest synth: location that is location of meeting whose date is jan 2  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <=) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meetings are scheduled to run for three hours on jan 2; true synthetic utterance: meeting whose date is jan 2 and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose start time is 3pm and whose date is jan 2 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all important meetings on jan 2; true synthetic utterance: meeting whose date is jan 2 and that is important true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string is_important) ) ) 
+-->Closest synth: meeting that is important and whose date is jan 2   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings alice has attended at the greenberg cafe; true synthetic utterance: meeting whose attendee is alice and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice)  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose attendee is alice and whose location is greenberg cafe  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings after january 2nd; true synthetic utterance: meeting whose date is larger than jan 2 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >)  (ensureNumericEntity (date 2015 1 2) ) ) ) 
+-->Closest synth: meeting whose date is jan 2       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: person attending least number of meetings; true synthetic utterance: person that is attendee of the least number of meeting true program:     (listValue (countSuperlative (getProperty (singleton en.person)  (string !type) )  (string min)  (reverse (string attendee) )  (getProperty (singleton en.meeting)  (string !type) ) ) ) 
+-->Closest synth: person that is attendee of the least number of meeting   
+-->Predicted program:(listValue (filter (getProperty (singleton en.person) (string !type) ) (reverse (string attendee) ) (string =) (filter (getProperty (singleton en.meeting) (string !type) ) (string end_time) (string =) (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has the earliest date; true synthetic utterance: meeting that has the smallest date true program:     (listValue (superlative (getProperty (singleton en.meeting)  (string !type) )  (string min)  (ensureNumericProperty (string date) ) ) ) 
+-->Closest synth: meeting that has the smallest date      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (string location) (string =) en.location.greenberg_cafe) )
+-------------
+
+-------------
+NL praphrase: what meeting ends no earlier than 10am; true synthetic utterance: meeting whose end time is smaller than 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meetings occur on the same day as weekly standup; true synthetic utterance: meeting whose date is date of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (getProperty en.meeting.weekly_standup (string date) ) ) ) 
+-->Closest synth: meeting whose date is date of weekly standup     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meetings take place in greenbug cafe; true synthetic utterance: meeting whose location is greenberg cafe and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose location is greenberg cafe or central office    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has a length smaller than three hours; true synthetic utterance: meeting whose length is smaller than three hours true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string <)  (ensureNumericEntity (number 3 en.hour) ) ) ) 
+-->Closest synth: meeting whose length is smaller than three hours     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me the meetings with the most attendees; true synthetic utterance: meeting that has the most number of attendee true program:     (listValue (countSuperlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (string attendee) ) ) 
+-->Closest synth: meeting that has the most number of attendee     
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string end_time) (string =) (time 10 0) ) (string date) (string =) (date 2015 1 2) ) )
+-------------
+
+-------------
+NL praphrase: what meeting is starting the same time as weekly standup; true synthetic utterance: meeting whose start time is start time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (getProperty en.meeting.weekly_standup (string start_time) ) ) ) 
+-->Closest synth: meeting whose start time is start time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings starting at 10am that take 3 horus; true synthetic utterance: meeting whose start time is 10am and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose start time is at most 10am or 3pm   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: location same as weekly meeting or annual review; true synthetic utterance: location that is location of weekly standup or annual review true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  (concat en.meeting.weekly_standup en.meeting.annual_review) ) ) 
+-->Closest synth: meeting whose location is location of annual review     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (number 3 en.hour) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting in which alice is attending and ends at 10 am; true synthetic utterance: meeting whose end time is 10am and whose attendee is alice true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (time 10 0) )  (string attendee)  (string =)  en.person.alice) ) 
+-->Closest synth: meeting whose attendee is alice and whose end time is 10am  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting start time is later than 10am; true synthetic utterance: meeting whose start time is larger than 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose start time is larger than 10am     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that are not attended by alice; true synthetic utterance: meeting whose attendee is not alice true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string !=)  en.person.alice) ) 
+-->Closest synth: meeting whose attendee is not alice      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string <) (ensureNumericEntity (date 2015 1 2) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has the fewest locations; true synthetic utterance: meeting that has the least number of location true program:     (listValue (countSuperlative (getProperty (singleton en.meeting)  (string !type) )  (string min)  (string location) ) ) 
+-->Closest synth: meeting that has the least number of location     
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string start_time) (string =) (time 10 0) ) (string attendee) (string =) en.person.alice) )
+-------------
+
+-------------
+NL praphrase: show me all meetings ending after the weekly standup ends; true synthetic utterance: meeting whose start time is larger than end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose end time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting is at greenberg cafe and ends at 10am; true synthetic utterance: meeting whose location is greenberg cafe and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose location is greenberg cafe and whose end time is 10am 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting is not at greenberg cafe; true synthetic utterance: meeting whose location is not greenberg cafe true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string !=)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting whose location is not greenberg cafe      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meetings have a length of three hours and alice is attending; true synthetic utterance: meeting whose length is three hours and whose attendee is alice true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (number 3 en.hour) )  (string attendee)  (string =)  en.person.alice) ) 
+-->Closest synth: meeting whose length is three hours and whose attendee is alice  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meetings are scheduled for a date no earlier than jan 2; true synthetic utterance: meeting whose date is at least jan 2 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >=)  (ensureNumericEntity (date 2015 1 2) ) ) ) 
+-->Closest synth: meeting whose date is at least jan 2    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: locations of meetings that end at 10am; true synthetic utterance: location that is location of meeting whose end time is 10am true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (time 10 0) ) ) ) 
+-->Closest synth: location that is location of meeting whose end time is 10am  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meetings end no later then the weekly standup meeting ends; true synthetic utterance: meeting whose end time is at least end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose end time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting is in either greenberg cage or central office; true synthetic utterance: meeting whose location is greenberg cafe or central office true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  (concat en.location.greenberg_cafe en.location.central_office) ) ) 
+-->Closest synth: meeting whose location is greenberg cafe or central office    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings happening at greenberg cafe or central office; true synthetic utterance: greenberg cafe or central office true program:     (listValue (concat en.location.greenberg_cafe en.location.central_office) ) 
+-->Closest synth: meeting whose location is greenberg cafe or central office    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what is the average length of all meetings; true synthetic utterance: average length of meeting true program:     (listValue (aggregate (string avg)  (getProperty (getProperty (singleton en.meeting)  (string !type) )  (string length) ) ) ) 
+-->Closest synth: average length of meeting         
+-->Predicted program:(listValue (superlative (getProperty (singleton en.meeting) (string !type) ) (string min) (ensureNumericProperty (string end_time) ) ) )
+-------------
+
+-------------
+NL praphrase: who is attending the three hour meeting; true synthetic utterance: person that is attendee of meeting whose length is three hours true program:     (listValue (filter (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (number 3 en.hour) ) ) ) 
+-->Closest synth: meeting whose length is three hours       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (number 3 en.hour) ) ) )
+-------------
+
+-------------
+NL praphrase: what are some important meetings; true synthetic utterance: meeting that is important true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) ) ) 
+-->Closest synth: meeting that is important         
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings which start at the same time or later than the weekly standup; true synthetic utterance: meeting whose start time is at least start time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) ) 
+-->Closest synth: meeting whose start time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting on jan 2 which ends at 10 am; true synthetic utterance: meeting whose date is jan 2 and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose start time is 10am and whose date is jan 2 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting starts earlier than 10am or 3pm; true synthetic utterance: meeting whose start time is smaller than 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string <)  (ensureNumericEntity (concat (time 10 0)  (time 15 0) ) ) ) ) 
+-->Closest synth: meeting whose start time is 10am or 3pm     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings that end at 10am in greenberg cafe; true synthetic utterance: meeting whose location is greenberg cafe and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose end time is 10am and whose location is greenberg cafe 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: tell me the all meetings begins after 10am or 3pm; true synthetic utterance: meeting whose start time is at least 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >=)  (ensureNumericEntity (concat (time 10 0)  (time 15 0) ) ) ) ) 
+-->Closest synth: meeting whose start time is 10am or 3pm     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: people that attend important meetings; true synthetic utterance: person that is attendee of meeting that is important true program:     (listValue (filter (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) ) ) ) 
+-->Closest synth: person that is attendee of meeting that is important    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: how many locations house meetings; true synthetic utterance: number of location true program:     (listValue (call .size (getProperty (singleton en.location)  (string !type) ) ) ) 
+-->Closest synth: location that is location of more than two meeting    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings happening before january 2nd; true synthetic utterance: meeting whose date is smaller than jan 2 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string <)  (ensureNumericEntity (date 2015 1 2) ) ) ) 
+-->Closest synth: meeting whose date is jan 2       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what is the date of weekly standup; true synthetic utterance: date of weekly standup true program:     (listValue (getProperty en.meeting.weekly_standup (string date) ) ) 
+-->Closest synth: date of weekly standup         
+-->Predicted program:(listValue (superlative (getProperty (singleton en.meeting) (string !type) ) (string min) (ensureNumericProperty (string start_time) ) ) )
+-------------
+
+-------------
+NL praphrase: create a meeting for jan 2nd until 10am; true synthetic utterance: meeting whose date is jan 2 and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose start time is 10am and whose date is jan 2 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting is on jan 2; true synthetic utterance: meeting whose date is jan 2 and whose date is jan 2 true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string date)  (string =)  (date 2015 1 2) ) ) 
+-->Closest synth: meeting whose date is jan 2       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me important meetings at greenberg cafe; true synthetic utterance: meeting that is important and whose location is greenberg cafe true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) )  (string location)  (string =)  en.location.greenberg_cafe) ) 
+-->Closest synth: meeting that is important and whose location is greenberg cafe   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting starting at time of weekly standup; true synthetic utterance: meeting whose start time is start time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (getProperty en.meeting.weekly_standup (string start_time) ) ) ) 
+-->Closest synth: meeting whose start time is start time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings held in the same location as the weekly standup meeting; true synthetic utterance: meeting whose location is location of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  (getProperty en.meeting.weekly_standup (string location) ) ) ) 
+-->Closest synth: meeting whose location is location of weekly standup     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings which are either shorter or longer than three hours; true synthetic utterance: meeting whose length is not three hours true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string !=)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose length is at most three hours or three hours 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting lasts from one to three hours; true synthetic utterance: meeting whose length is three hours or one hour true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (concat (number 3 en.hour)  (number 1 en.hour) ) ) ) 
+-->Closest synth: meeting whose length is at most three hours     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has alice attending on jan 2; true synthetic utterance: meeting whose attendee is alice and whose date is jan 2 true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice)  (string date)  (string =)  (date 2015 1 2) ) ) 
+-->Closest synth: meeting whose attendee is alice and whose date is jan 2 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings alice has attended marked as important; true synthetic utterance: meeting whose attendee is alice and that is important true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice)  (string is_important) ) ) 
+-->Closest synth: meeting that is important and whose attendee is alice    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that are longer than the weekly startup meeting; true synthetic utterance: meeting whose length is larger than length of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string >)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) ) 
+-->Closest synth: meeting whose start time is smaller than start time of weekly standup 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me the important meetings that last three hours; true synthetic utterance: meeting that is important and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting that is important and whose length is three hours   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting begins latest; true synthetic utterance: meeting that has the largest start time true program:     (listValue (superlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (ensureNumericProperty (string start_time) ) ) ) 
+-->Closest synth: meeting that has the largest start time      
+-->Predicted program:(listValue (superlative (getProperty (singleton en.meeting) (string !type) ) (string min) (ensureNumericProperty (string start_time) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings marked important ending at 10 am; true synthetic utterance: meeting that is important and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string is_important) )  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose end time is 10am and that is important   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting ends at the same time as weekly standup or later; true synthetic utterance: meeting whose end time is at least end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose end time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings that alice is attending on jan 2; true synthetic utterance: meeting whose attendee is alice and whose date is jan 2 true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice)  (string date)  (string =)  (date 2015 1 2) ) ) 
+-->Closest synth: meeting whose attendee is alice and whose date is jan 2 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting ends at the start time of weekly standup; true synthetic utterance: meeting whose end time is start time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (getProperty en.meeting.weekly_standup (string start_time) ) ) ) 
+-->Closest synth: meeting whose start time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings held in less than two locations; true synthetic utterance: meeting that has less than two location true program:     (listValue (countComparative (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string <)  (number 2) ) ) 
+-->Closest synth: meeting that has at most two location      
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) en.person.alice) (string location) (string =) en.location.greenberg_cafe) )
+-------------
+
+-------------
+NL praphrase: what important meeting has an end time of 10am; true synthetic utterance: meeting whose end time is 10am and that is important true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (time 10 0) )  (string is_important) ) ) 
+-->Closest synth: meeting that is important and whose end time is 10am     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that are on or before january 3; true synthetic utterance: meeting whose date is at least jan 2 or jan 3 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >=)  (ensureNumericEntity (concat (date 2015 1 2)  (date 2015 1 3) ) ) ) ) 
+-->Closest synth: meeting whose date is jan 3 or jan 3    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has the same end time as that of weekly standup; true synthetic utterance: meeting whose end time is at most end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose end time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings before 10am; true synthetic utterance: meeting whose end time is smaller than 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose start time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has the most attendees; true synthetic utterance: meeting that has the most number of attendee true program:     (listValue (countSuperlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (string attendee) ) ) 
+-->Closest synth: meeting that has the most number of attendee     
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string end_time) (string =) (time 10 0) ) (string date) (string =) (date 2015 1 2) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings that run either three hours or one hour; true synthetic utterance: meeting whose length is three hours or one hour true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (concat (number 3 en.hour)  (number 1 en.hour) ) ) ) 
+-->Closest synth: meeting whose length is at most three hours or one hour  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me the meeting that starts and ends at 10 am; true synthetic utterance: meeting whose start time is 10am and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) )  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose end time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings that end earlier than the week standup meeting ends; true synthetic utterance: meeting whose end time is smaller than end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose end time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: which meeting has the most people scheduled to attend; true synthetic utterance: meeting that has the most number of attendee true program:     (listValue (countSuperlative (getProperty (singleton en.meeting)  (string !type) )  (string max)  (string attendee) ) ) 
+-->Closest synth: meeting that has the most number of attendee     
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string end_time) (string =) (time 10 0) ) (string date) (string =) (date 2015 1 2) ) )
+-------------
+
+-------------
+NL praphrase: what person is attending a meeting that ends at 10am; true synthetic utterance: person that is attendee of meeting whose end time is 10am true program:     (listValue (filter (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string end_time)  (string =)  (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings on january 2 or january 3; true synthetic utterance: meeting whose date is jan 2 or jan 3 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (concat (date 2015 1 2)  (date 2015 1 3) ) ) ) 
+-->Closest synth: meeting whose date is jan 2 or jan 3    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings that take 3 hours and start at 10am; true synthetic utterance: meeting whose length is three hours and whose start time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string length)  (string =)  (number 3 en.hour) )  (string start_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose start time is 10am and whose length is three hours 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: alice or bob is an attendee at the meeting; true synthetic utterance: meeting whose attendee is alice or bob true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  (concat en.person.alice en.person.bob) ) ) 
+-->Closest synth: meeting whose attendee is alice or bob      
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings which are scheduled no later than january 3; true synthetic utterance: meeting whose date is at most jan 2 or jan 3 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string <=)  (ensureNumericEntity (concat (date 2015 1 2)  (date 2015 1 3) ) ) ) ) 
+-->Closest synth: meeting whose date is at least jan 3    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: who attends the weekly standup meeting; true synthetic utterance: attendee of weekly standup true program:     (listValue (getProperty en.meeting.weekly_standup (string attendee) ) ) 
+-->Closest synth: meeting whose attendee is attendee of weekly standup       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings starting at 10 am or after; true synthetic utterance: meeting whose start time is at least 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >=)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose start time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: meetings that end later than 10am; true synthetic utterance: meeting whose end time is larger than 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is at least 10am     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string attendee) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings which have only one location; true synthetic utterance: meeting that has less than two location true program:     (listValue (countComparative (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string <)  (number 2) ) ) 
+-->Closest synth: meeting that has at most two location      
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) en.person.alice) (string location) (string =) en.location.greenberg_cafe) )
+-------------
+
+-------------
+NL praphrase: who has attended the weekly standup meeting; true synthetic utterance: attendee of weekly standup true program:     (listValue (getProperty en.meeting.weekly_standup (string attendee) ) ) 
+-->Closest synth: attendee of weekly standup         
+-->Predicted program:(listValue (superlative (getProperty (singleton en.meeting) (string !type) ) (string min) (ensureNumericProperty (string start_time) ) ) )
+-------------
+
+-------------
+NL praphrase: who are the people attending at least two different meetings; true synthetic utterance: person that is attendee of at least two meeting true program:     (listValue (countComparative (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string >=)  (number 2)  (getProperty (singleton en.meeting)  (string !type) ) ) ) 
+-->Closest synth: person that is attendee of at least two meeting    
+-->Predicted program:(listValue (filter (getProperty (singleton en.person) (string !type) ) (reverse (string attendee) ) (string =) (filter (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) en.person.alice) ) )
+-------------
+
+-------------
+NL praphrase: what meeting who starts right right after weekly standup; true synthetic utterance: meeting whose start time is at least end time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string start_time) )  (string >=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) ) 
+-->Closest synth: meeting whose start time is start time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings that have two or fewer attendees; true synthetic utterance: meeting that has at most two attendee true program:     (listValue (countComparative (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string <=)  (number 2) ) ) 
+-->Closest synth: meeting that has at most two attendee      
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) en.person.alice) (string date) (string =) (date 2015 1 2) ) )
+-------------
+
+-------------
+NL praphrase: what meeting ends before 3pm or 10am; true synthetic utterance: meeting whose end time is smaller than 10am or 3pm true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string <)  (ensureNumericEntity (concat (time 10 0)  (time 15 0) ) ) ) ) 
+-->Closest synth: meeting whose end time is 10am or 3pm     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meetings have no more than two different locations; true synthetic utterance: meeting that has at most two location true program:     (listValue (countComparative (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string <=)  (number 2) ) ) 
+-->Closest synth: meeting that has at most two location      
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) en.person.alice) (string location) (string =) en.location.greenberg_cafe) )
+-------------
+
+-------------
+NL praphrase: meetings that are longer than three hours or longer than an hour; true synthetic utterance: meeting whose length is larger than three hours or one hour true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string >)  (ensureNumericEntity (concat (number 3 en.hour)  (number 1 en.hour) ) ) ) ) 
+-->Closest synth: meeting whose length is at most three hours or three hours 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string attendee) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all the meetings that have two or more participants; true synthetic utterance: meeting that has at least two attendee true program:     (listValue (countComparative (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string >=)  (number 2) ) ) 
+-->Closest synth: meeting that has at most two attendee      
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) en.person.alice) (string date) (string =) (date 2015 1 2) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings beginning at 10 am which are three hours long; true synthetic utterance: meeting whose start time is 10am and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose start time is 10am and whose length is three hours 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: meeting with fewest locations; true synthetic utterance: meeting that has the least number of location true program:     (listValue (countSuperlative (getProperty (singleton en.meeting)  (string !type) )  (string min)  (string location) ) ) 
+-->Closest synth: meeting that has the least number of location     
+-->Predicted program:(listValue (filter (filter (getProperty (singleton en.meeting) (string !type) ) (string start_time) (string =) (time 10 0) ) (string attendee) (string =) en.person.alice) )
+-------------
+
+-------------
+NL praphrase: what three hour meeting is at greenberg cafe; true synthetic utterance: meeting whose location is greenberg cafe and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose location is greenberg cafe         
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all attendees of the weekly standup meeting; true synthetic utterance: person that is attendee of weekly standup true program:     (listValue (filter (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string =)  en.meeting.weekly_standup) ) 
+-->Closest synth: meeting whose attendee is attendee of weekly standup       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings on january 2nd which are three hours long; true synthetic utterance: meeting whose date is jan 2 and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string date)  (string =)  (date 2015 1 2) )  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose length is three hours and whose date is jan 2 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (concat (number 3 en.hour) (number 1 en.hour) ) ) ) )
+-------------
+
+-------------
+NL praphrase: which important meeting starts at 10 in the morning; true synthetic utterance: meeting whose start time is 10am and that is important true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) )  (string is_important) ) ) 
+-->Closest synth: meeting that is important and whose start time is 10am   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings which end at the same time or later than the weekly standup meeting begins; true synthetic utterance: meeting whose end time is at least start time of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) ) 
+-->Closest synth: meeting whose start time is end time of weekly standup   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meeting happening after the day of weekly standup; true synthetic utterance: meeting whose date is larger than date of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) ) 
+-->Closest synth: meeting whose date is date of weekly standup     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: find me a meeting that ends 10am or later; true synthetic utterance: meeting whose end time is at least 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >=)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am and that is important   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting starts at 10am and ends at 10am q; true synthetic utterance: meeting whose start time is 10am and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) )  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose start time is 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (time 10 0) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting was on or before jan 2; true synthetic utterance: meeting whose date is at most jan 2 true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string <=)  (ensureNumericEntity (date 2015 1 2) ) ) ) 
+-->Closest synth: meeting whose date is jan 2       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string length) ) (string <) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string length) ) ) ) )
+-------------
+
+-------------
+NL praphrase: who is the person attending  more than two meetings; true synthetic utterance: person that is attendee of more than two meeting true program:     (listValue (countComparative (getProperty (singleton en.person)  (string !type) )  (reverse (string attendee) )  (string >)  (number 2)  (getProperty (singleton en.meeting)  (string !type) ) ) ) 
+-->Closest synth: person that is attendee of more than two meeting    
+-->Predicted program:(listValue (filter (getProperty (singleton en.location) (string !type) ) (reverse (string location) ) (string =) (concat en.meeting.weekly_standup en.meeting.annual_review) ) )
+-------------
+
+-------------
+NL praphrase: meeting at greenberg cafe ends at 1000 am; true synthetic utterance: meeting whose location is greenberg cafe and whose end time is 10am true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string =)  en.location.greenberg_cafe)  (string end_time)  (string =)  (time 10 0) ) ) 
+-->Closest synth: meeting whose end time is 10am and whose location is greenberg cafe 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string end_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings ending at or after 10 am; true synthetic utterance: meeting whose end time is at least 10am true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string end_time) )  (string >=)  (ensureNumericEntity (time 10 0) ) ) ) 
+-->Closest synth: meeting whose end time is 10am or 10am       
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what important meeting has a start time at 10am; true synthetic utterance: meeting whose start time is 10am and that is important true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) )  (string is_important) ) ) 
+-->Closest synth: meeting that is important and whose start time is 10am   
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (concat (time 10 0) (time 15 0) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all meetings with alice; true synthetic utterance: meeting whose attendee is alice true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice) ) 
+-->Closest synth: meeting whose attendee is alice        
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (date 2015 1 2) ) ) )
+-------------
+
+-------------
+NL praphrase: show me meetings after the weekly standup day; true synthetic utterance: meeting whose date is at least date of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string >=)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) ) 
+-->Closest synth: meeting whose date is date of weekly standup     
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string end_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: location of meetings that start at 10am; true synthetic utterance: location that is location of meeting whose start time is 10am true program:     (listValue (filter (getProperty (singleton en.location)  (string !type) )  (reverse (string location) )  (string =)  (filter (getProperty (singleton en.meeting)  (string !type) )  (string start_time)  (string =)  (time 10 0) ) ) ) 
+-->Closest synth: location that is location of meeting whose start time is 10am  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has length shorter than one to three hours; true synthetic utterance: meeting whose length is smaller than three hours or one hour true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string length) )  (string <)  (ensureNumericEntity (concat (number 3 en.hour)  (number 1 en.hour) ) ) ) ) 
+-->Closest synth: meeting whose length is smaller than three hours or one hour    
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has less than two locations; true synthetic utterance: meeting that has less than two location true program:     (listValue (countComparative (getProperty (singleton en.meeting)  (string !type) )  (string location)  (string <)  (number 2) ) ) 
+-->Closest synth: meeting that has less than two location      
+-->Predicted program:(listValue (countComparative (getProperty (singleton en.meeting) (string !type) ) (string attendee) (string =) (number 2) ) )
+-------------
+
+-------------
+NL praphrase: what meeting has a date earlier than weekly startup; true synthetic utterance: meeting whose date is smaller than date of weekly standup true program:     (listValue (filter (getProperty (singleton en.meeting)  (string !type) )  (ensureNumericProperty (string date) )  (string <)  (ensureNumericEntity (getProperty en.meeting.weekly_standup (string date) ) ) ) ) 
+-->Closest synth: meeting whose start time is at least start time of weekly standup 
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string start_time) ) (string >) (ensureNumericEntity (getProperty en.meeting.weekly_standup (string start_time) ) ) ) )
+-------------
+
+-------------
+NL praphrase: show me all three hour meetings that alice is attending; true synthetic utterance: meeting whose attendee is alice and whose length is three hours true program:     (listValue (filter (filter (getProperty (singleton en.meeting)  (string !type) )  (string attendee)  (string =)  en.person.alice)  (string length)  (string =)  (number 3 en.hour) ) ) 
+-->Closest synth: meeting whose length is three hours and whose attendee is alice  
+-->Predicted program:(listValue (filter (getProperty (singleton en.meeting) (string !type) ) (ensureNumericProperty (string date) ) (string >) (ensureNumericEntity (concat (date 2015 1 2) (date 2015 1 3) ) ) ) )
+-------------
+
+Program Accuracy: 0.0
+Synthetic Accuracy: 0.39880952380952384
