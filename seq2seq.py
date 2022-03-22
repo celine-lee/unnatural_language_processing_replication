@@ -206,7 +206,7 @@ def train_epoch(data, seq2seq, hidden_size, optimizer, criterion, force_teacher=
         # make predictions tensors
         for j in range(batch_size):
             predictions[j] = torch.tensor(predictions[j])
-            # print('\nSRC: ', data.tensorized_to_synth_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
+            # print('\nSRC: ', data.tensorized_to_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
 
         # update loss and accuracy
         total_loss += loss.item()
@@ -315,7 +315,7 @@ def test_model(seq2seq, data):
         # make predictions tensors
         for j in range(batch_size):
             predictions[j] = torch.tensor(predictions[j])
-            # print('\nSRC: ', data.tensorized_to_synth_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
+            # print('\nSRC: ', data.tensorized_to_utterance(input[j]), '\nTGT: ', data.tensorized_to_program(target[j]), '\n\t-->PRED: ', data.tensorized_to_program(predictions[j]))
 
         # update loss and accuracy
         total_loss += loss.item()
@@ -341,6 +341,7 @@ def build_parser():
     parser.add_argument('--load_model', action='store_true', help='whether to load a model for evaluation.')
     parser.add_argument('--train_model', action='store_true', help='whether to train the model')
     parser.add_argument('--model_filename', type=str, default='seq2seq_model', help='filename of saved model. It will be saved in models/ with .pt and configs/ with .json')
+    parser.add_argument('--data_option', type=int, default=0, help='0=synthetics only; 1=real only; 2=synthetics+real')
     return parser
 
 def load_model(model_file, config_file):
@@ -373,13 +374,13 @@ if __name__ == '__main__':
         )
         config = wandb.config
         # config = args
-        data = Calendar('overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size)
+        data = Calendar('overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size, data_option=args.data_option)
 
 
         if config.load_model:
             seq2seq = load_model('models/' + config.model_filename + '.pt', 'configs/' + config.model_filename + '.json')
         else:
-            encoder = Encoder(len(data.synth_utterance_vocab), config.embedding_size, config.hidden_size)
+            encoder = Encoder(len(data.utterance_vocab), config.embedding_size, config.hidden_size)
             decoder = Decoder(len(data.program_vocab), config.embedding_size, config.hidden_size)
             seq2seq = Seq2seq(encoder, decoder)
         seq2seq.to(device)
@@ -389,7 +390,7 @@ if __name__ == '__main__':
         config = args
         if config.load_model:
             seq2seq = load_model('models/' + config.model_filename + '.pt', 'configs/' + config.model_filename + '.json')
-            data = Calendar('overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size)
+            data = Calendar('overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size, data_option=args.data_option)
             seq2seq.to(device)
         else:
             print('Must either train or load a model. Exiting...')
@@ -402,7 +403,7 @@ if __name__ == '__main__':
         torch.save(seq2seq.state_dict(), model_path)
         with open(config_path, 'w') as f:
             model_config = {
-                'src_vocab_size': len(data.synth_utterance_vocab),
+                'src_vocab_size': len(data.utterance_vocab),
                 'tgt_vocab_size': len(data.program_vocab),
                 'embedding_size': config.embedding_size,
                 'hidden_size': config.hidden_size,

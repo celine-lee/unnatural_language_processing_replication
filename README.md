@@ -4,38 +4,55 @@
 
 
 ## Introduction
-The task of the paper is to generate and train a model on synthetic text data to perform some natural language processing task. This paper builds off of the use of a program and synthetic utterance grammar to generate corresponding canonical synthetic utterances for each program, a technique presented in previous works, one prominent one of which is ['Building a Semantic Parser Overnight'](https://aclanthology.org/P15-1129.pdf). The contribution of this paper is the development of a projection model to map natural language utterances to sentences in the synthetic text domain. The synthetic sentence can then be used as input to the trained semantic parser.
+The objective of the paper is to generate and train a model on synthetic text data to perform some natural language processing task. This paper builds off of previous work (['Building a Semantic Parser Overnight'](https://aclanthology.org/P15-1129.pdf)) that uses a program and synthetic utterance grammar to generate corresponding canonical synthetic utterances for each program. The contribution of this paper is the development of a *projection model* to map natural language utterances to sentences in the synthetic text domain. The synthetic sentence can then be used as input to the trained semantic parser.
 
 The combination of the (1) synthetic data generation, (2) trained synthetic data task model, and (3) projection model compose a framework for developing NLP systems without large annotated datasets.
 
 At a high level, the pipeline looks as follows:
 ![Pipeline](images/system_pipeline.png?raw=true "system pipeline diagram")
 
-In this replication, we focus on their framework in the context of Semantic Parsing with the Overnight dataset.
+In this replication, we focus on this synthetic model and projection framework in the context of Semantic Parsing with the Overnight dataset.
 
 ## Method
-To replicate this part of this paper, we break the process down into three primary components: (1) collect synthetic data, (2) train semantic parser on synthetic utterances and programs, (3) write projection model from NL utterances to synthetic utterances in the grammar. 
+To replicate this part of this paper, I broke the process down into three primary components: (1) collect synthetic data, (2) train semantic parser on synthetic utterances and programs, (3) write projection model from NL utterances to synthetic utterances in the grammar. 
 
 ### (1) Collect synthetic data
-tODO
+Data is collected from the Calendar domain of the Overnight dataset. 
+
+Download data files from the SEMPRE CodaLab: [worksheet](https://worksheets.codalab.org/worksheets/0x269ef752f8c344a28383240f7bb2be9c)
+Files are collected in the `overnight_data` folder.
+
+(The SEMPRE full semantic parsing pipeline, which we do not use but is the resulting model from the original Overnight dataset paper, can also be run in an interactive shell by following the [instructions](#(unused,-but-interesting)-run-stanford-semantic-parsing-model-(trained-on-overnight-dataset))
+
+Once the data files for grammar and examples were downloaded, I wrote a dataloader for the original synthetic canonical utterance, natural language paraphrase, and Calendar domain program. Based on whether I want to train on only synthetic->program, paraphrase->program, synthetic/paraphrase->program, I load the corresponding input utterance and output programs accordingly. 
 
 ### (2) Train semantic parser
-TODO
-Graphs from the training procedure are shown below:
+With the dataloader written, I follow suit of the paper and train a LSTM encoder-decoder model with an embedding size of 256 and a hidden size of 1024. This model is the seq2seq semantic parser from utterance to program in the Calendar domain. 
+
+Graphs from the training procedure on training the models only on synthetic data are shown below:
 ![Training Accuracy](images/accuracy_plot.png?raw=true "seq2seq training accuracy")
 ![Training Loss](images/loss_plot.png?raw=true "seq2seq training loss")
 ![Test Accuracy](images/test_acc_plot.png?raw=true "seq2seq test accuracy")
 ![Test Loss](images/test_loss_plot.png?raw=true "seq2seq test loss")
 
 ### (3) Write projection model
-TODO
+In the paper, for all datasets in the semantic parsing Overnight dataset, the authors use the "flat" projection model <img src="https://render.githubusercontent.com/render/math?math=\pi">, which is to select the "closest" synthetic utterance to an input natural language utterance by using sentence embeddings (embed) and searching over all synthetic utterances <img src="https://render.githubusercontent.com/render/math?math=\tilde{x}"> in a set of utterances <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}"> to find the one with the closest cosine similarity <img src="https://render.githubusercontent.com/render/math?math=\delta">:
+![Projection](images/projection_eqn.png?raw=true "flat projection formula")
+
+Therefore, we do the same, using SentenceTransformers's 'all-MiniLM-L12-v2' model and sklearn's cosine_similarity metric. The paper is unclear on how they obtain the set of synthetic utterances <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">, so I tried a couple techniques, all documented below:
+- save all synthetic utterances from training into <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">
+- save all synthetic utterances from training and test into <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">
+- save all synthetic utterances from training and programmatically augment each example with argument and function flips, according to the grammar files -- TODO
 
 ## Results
-| Model         | Projector | Program Accuracy | Program Accuracy (w test)| Synth Utterance Accuracy | Synth Utterance Accuracy (w test) | Paper Accuracy|
-| ------------- |:---------:|:----------------:|:-----------------------:|:------------------------:|:---------------------------------:|:-------------:|
-| adagrad-8eps  | Flat      | 0.0              | 0.0                     | 0.4166                   |  0.4226                           |   0.32        |
-| adam-20eps    | Flat      | 0.4167           | 0.4226                  | 0.4167                   |  0.4226                           | 0.32          |
-| adam-8eps     | Flat      | 0.4167           | 0.4226                  | 0.4167                   |  0.4226                           | 0.32          |
+| Model         | Train data | Program Accuracy | (w test) | (w augment) | (w test & augment) | Synth Utterance Accuracy | (w test)  | (w augment) | (w test & augment)| Paper Accuracy|
+| ------------- |:----------:|:----------------:|:--------:|:-----------:|:------------------:|:------------------------:|:---------:|:-----------:|:-----------------:|:-------------:|
+| adagrad-8eps  | synthetic  | 0.0              | 0.0      | 0.0         | 0.0                | 0.4166                   |  0.4226   | 0.3988      | 0.3988            |   0.32        |
+| adam-20eps    | synthetic  | 0.4167           | 0.4226   | --          | --                 | 0.4167                   |  0.4226   |  --        | --                 | 0.32          |
+| adam-8eps     | synthetic  | 0.4167           | 0.4226   | 0.3988      | 0.3988             | 0.4167                   |  0.4226   | 0.3988     | 0.3988             | 0.32          |
+| adam-15-real  | real       | 0.0119           | 0.0119   | 0.0119      | 0.0119             | 0.4167                   |  0.4226   | 0.3988     | 0.3988            | 0.27          |
+| adam-15-both  | both       | 0.           | 0.                   | 0.                   |  0.                           | 0.13          |
+
 
 ## How to replicate
 
@@ -67,7 +84,7 @@ Once the (synthetic) semantic parser has been trained, we pre-pend a projection 
 python baseline.py \
         --batch_size 8 \
         --model_filename 'seq2seq_adam_8' \
-        --output_filename 'output/seq2seq_adam_8_projection.txt'
+        --output_file 'output/seq2seq_adam_8_projection.txt'
 ```
 
 An interactive version of the interface can be run with the following command:

@@ -15,14 +15,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Projector(): 
 
-    def __init__(self, model_file, config_file, train_datafile, test_datafile, embedder_name='all-MiniLM-L12-v2', batch_size=8, get_synth_from_test_too=False):
+    def __init__(self, model_file, config_file, train_datafile, test_datafile, embedder_name='all-MiniLM-L12-v2', batch_size=8, get_synth_from_test_too=False, augment=False):
         self.model = self.load_model(model_file, config_file)
         self.data = Calendar(train_datafile, test_datafile, batch_size=batch_size)
         self.embedder = SentenceTransformer(embedder_name)
 
-        self.synth_utterances, self.synth_encodings = self.collect_all_synth_utterances(self.data.train_dataloader, self.data)
+        self.synth_utterances, self.synth_encodings = self.collect_all_synth_utterances(self.data.train_dataloader, self.data, augment)
         if get_synth_from_test_too:
-            synth_utterances_test, synth_encodings_test = self.collect_all_synth_utterances(self.data.test_dataloader, self.data)
+            synth_utterances_test, synth_encodings_test = self.collect_all_synth_utterances(self.data.test_dataloader, self.data, augment)
             self.synth_utterances = np.concatenate((self.synth_utterances, synth_utterances_test))
             self.synth_encodings = np.concatenate((self.synth_encodings, synth_encodings_test))
 
@@ -42,21 +42,44 @@ class Projector():
         seq2seq.load_state_dict(torch.load(model_file))
         return seq2seq
 
-    def collect_all_synth_utterances(self, dataloader, data):
+    def collect_all_synth_utterances(self, dataloader, data, augment):
         """ Collects all synthetic utterances from the training data.
         Args:
             dataloader: The training data.
             data: Calendar object
             embedder: SentenceTransformer object
+            augment: whether to augment the training data
         Returns:
             synth_utterances (dict): A dict of all synthetic utterances and their embeddings
         """
+
         synth_utterances = []
+
+        def augment_sentence(sentence, old, new):
+            if old in sentence:
+                if sentence.replace(old, new) not in synth_utterances:
+                    synth_utterances.append(sentence.replace(old, new))
+
         for input, _, _, _ in dataloader:
             for j in range(input.size(0)):
-                synth_utterance = data.tensorized_to_synth_utterance(input[j])
+                synth_utterance = data.tensorized_to_utterance(input[j])
                 synth_utterance = synth_utterance.replace('<EOS>', '').replace('<SOS>', '').replace('<PAD>', '')
                 synth_utterances.append(synth_utterance)
+                if augment:
+                    augment_sentence(synth_utterance, 'weekly standup', 'annual review')
+                    augment_sentence(synth_utterance, 'annual review', 'weekly standup')
+                    augment_sentence(synth_utterance, 'jan 2', 'jan 3')
+                    augment_sentence(synth_utterance, 'jan 3', 'jan 2')
+                    augment_sentence(synth_utterance, 'start time', 'end time')
+                    augment_sentence(synth_utterance, 'end time', 'start time')
+                    augment_sentence(synth_utterance, '10am', '3pm')
+                    augment_sentence(synth_utterance, '3pm', '10am')
+                    augment_sentence(synth_utterance, 'three hours', 'one hour')
+                    augment_sentence(synth_utterance, 'one hour', 'three hours')
+                    augment_sentence(synth_utterance, 'alice', 'bob')
+                    augment_sentence(synth_utterance, 'bob', 'alice')
+                    augment_sentence(synth_utterance, 'greenberg cafe', 'central office')
+                    augment_sentence(synth_utterance, 'central office', 'greenberg cafe')
         synth_encodings = self.embedder.encode(synth_utterances)
         return synth_utterances, synth_encodings
         

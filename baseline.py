@@ -12,7 +12,8 @@ def build_parser():
     parser.add_argument('--batch_size', type=int, default=8, help='batch size to use')
     parser.add_argument('--model_filename', type=str, default='seq2seq', help='filename of saved model. It will be loaded in from models/ with .pt and configs/ with .json')
     parser.add_argument('--output_file', type=str, default='output/seq2seq_projection.txt', help='filename of file to write results to')
-    parser.add_argument('--use_test_synths_too', action='store_true', help='use test data to get synthetic utterances too')
+    parser.add_argument('--use_test_too', action='store_true', help='use test data to get synthetic utterances too')
+    parser.add_argument('--augment', action='store_true', help='whether to flip data fields in synthetic utterances to generate more')
     return parser
 
 if __name__ == '__main__':
@@ -24,7 +25,7 @@ if __name__ == '__main__':
     configname = 'configs/' + args.model_filename + '.json'
     print('Loading model from ', modelname, configname)
 
-    projector = Projector(modelname, configname, 'overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size, get_synth_from_test_too=args.use_test_synths_too)
+    projector = Projector(modelname, configname, 'overnight_data/calendar.paraphrases.train.examples', 'overnight_data/calendar.paraphrases.test.examples', batch_size=args.batch_size, get_synth_from_test_too=args.use_test_too, augment=args.augment)
     test_ds = projector.data.test_dataset
 
     outputs = []
