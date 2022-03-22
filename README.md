@@ -52,6 +52,7 @@ Therefore, we do the same, using SentenceTransformers's 'all-MiniLM-L12-v2' mode
 | adam-15-both  | both       | 0.0              | 0.0      | 0.0         | 0.0                |  0.4167                  |  0.4226   | 0.3988     | 0.3988             | --          |
 | adam-15-real  | real       | (no projection) 0.5298 | -- | --          | --                 | --                       |  --       | --         | --                 | 0.27          |
 | adam-15-both  | both       | (no projection) 0.0179 | -- | --          | --                 | --                       |  --       | --         | --                 | 0.13          |
+| adam-30-both  | both       | (no projection) 0.0119 | -- | --          | --                 | --                       |  --       | --         | --                 | 0.13          |
 
 My results follow the same general model performance trend: high performance with the synthetic data and projection model ("synthetic + projection") and the real data with no projection model ("real"), and low performance with both real and synthetic data with no projection model ("both"). However, the results did vary somewhat significantly. I discuss some theories and experiments around the variance below:
 
