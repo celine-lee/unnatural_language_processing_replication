@@ -15,9 +15,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Projector(): 
 
-    def __init__(self, model_file, config_file, train_datafile, test_datafile, embedder_name='all-MiniLM-L12-v2', batch_size=8, get_synth_from_test_too=False, augment=False):
+    def __init__(self, model_file, config_file, train_datafile, test_datafile, embedder_name='all-MiniLM-L12-v2', batch_size=8, get_synth_from_test_too=False, augment=False, data_option=0):
         self.model = self.load_model(model_file, config_file)
-        self.data = Calendar(train_datafile, test_datafile, batch_size=batch_size)
+        self.data = Calendar(train_datafile, test_datafile, batch_size=batch_size, data_option=data_option)
         self.embedder = SentenceTransformer(embedder_name)
 
         self.synth_utterances, self.synth_encodings = self.collect_all_synth_utterances(self.data.train_dataloader, self.data, augment)

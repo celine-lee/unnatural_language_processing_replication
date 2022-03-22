@@ -29,7 +29,7 @@ Once the data files for grammar and examples were downloaded, I wrote a dataload
 ### (2) Train semantic parser
 With the dataloader written, I follow suit of the paper and train a LSTM encoder-decoder model with an embedding size of 256 and a hidden size of 1024. This model is the seq2seq semantic parser from utterance to program in the Calendar domain. 
 
-Graphs from the training procedure on training the models only on synthetic data are shown below:
+Graphs from the training procedure on training the models on synthetic data, NL paraphrases, and both are shown below:
 ![Training Performance](images/train_performance.png?raw=true "seq2seq training performance")
 ![Test Performance](images/test_performance.png?raw=true "seq2seq test performance")
 
@@ -40,7 +40,7 @@ In the paper, for all datasets in the semantic parsing Overnight dataset, the au
 Therefore, we do the same, using SentenceTransformers's 'all-MiniLM-L12-v2' model and sklearn's cosine_similarity metric. The paper is unclear on how they obtain the set of synthetic utterances <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">, so I tried a couple techniques, all documented below:
 - save all synthetic utterances from training into <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">
 - save all synthetic utterances from training and test into <img src="https://render.githubusercontent.com/render/math?math=\widetilde\mathcal{X}">
-- save all synthetic utterances from training and programmatically augment each example with argument and function flips, according to the grammar files
+- save all synthetic utterances from training and programmatically augment each example with argument flips of matching type, according to the grammar files
 
 ## Results
 | Model         | Train data | Program Accuracy | (w test) | (w augment) | (w test & augment) | Synth Utterance Accuracy | (w test)  | (w augment) | (w test & augment)| Paper Accuracy|
@@ -48,8 +48,16 @@ Therefore, we do the same, using SentenceTransformers's 'all-MiniLM-L12-v2' mode
 | adagrad-8eps  | synthetic  | 0.0              | 0.0      | 0.0         | 0.0                | 0.4166                   |  0.4226   | 0.3988      | 0.3988            |   0.32        |
 | adam-20eps    | synthetic  | 0.4167           | 0.4226   | --          | --                 | 0.4167                   |  0.4226   |  --        | --                 | 0.32          |
 | adam-8eps     | synthetic  | 0.4167           | 0.4226   | 0.3988      | 0.3988             | 0.4167                   |  0.4226   | 0.3988     | 0.3988             | 0.32          |
-| adam-15-real  | real       | 0.0119           | 0.0119   | 0.0119      | 0.0119             | 0.4167                   |  0.4226   | 0.3988     | 0.3988             | 0.27          |
-| adam-15-both  | both       | 0.0              | 0.0      | 0.0         | 0.0                |  0.4167                  |  0.4226   | 0.3988     | 0.3988              | 0.13          |
+| adam-15-real  | real       | 0.0119           | 0.0119   | 0.0119      | 0.0119             | 0.4167                   |  0.4226   | 0.3988     | 0.3988             | --          |
+| adam-15-both  | both       | 0.0              | 0.0      | 0.0         | 0.0                |  0.4167                  |  0.4226   | 0.3988     | 0.3988             | --          |
+| adam-15-real  | real       | (no projection) 0.5298 | -- | --          | --                 | --                       |  --       | --         | --                 | 0.27          |
+| adam-15-both  | both       | (no projection) 0.0179 | -- | --          | --                 | --                       |  --       | --         | --                 | 0.13          |
+
+My results follow the same general model performance trend: high performance with the synthetic data and projection model ("synthetic + projection") and the real data with no projection model ("real"), and low performance with both real and synthetic data with no projection model ("both"). However, the results did vary somewhat significantly. I discuss some theories and experiments around the variance below:
+
+- Performance of my "synthetic + projection" model outperformed that of the paper. I believe this may have to do with the smaller set of synthetic utterances I was projecting onto, as my seq2seq model was fit to the set of synthetic utterances I mapped onto, and my program accuracy matched my synthetic utterance match accuracy. To test this, I artificially "augmented" the set of synthetic utterances: for each synthetic utterance, create additional synthetic utterances by swapping out arguments for other arguments of the same semantic type from the grammar. I noticed that performance dropped with augmentation, which suggest support for my theory about performance increase due to overfitting and bias with a smaller set of synthetic utterances.
+- Performance of my "real" model outperformed their "real" model by almost double the accuracy. I assume this is either a bug in my code or there was some inconsistency in model, number of training epochs, data set, or other. 
+- Performance of my "both" model underperformed their "both" model by almost 10x less. I assume this is either a bug in my code or there was some inconsistency in model, number of training epochs, data set, or other. 
 
 
 ## How to replicate
